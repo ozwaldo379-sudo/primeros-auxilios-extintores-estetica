@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏆 Competencia de Inspección EPP | Vértice EHS</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--dark:#080f1a;--navy:#0d1f35;--navy-mid:#24487a;--green:#2E8B57;--green-light:#3aaf6d;--gold:#C9A961;--gold-light:#dfc07a;--red:#e05252;--amber:#e09652;--white:#fff;--off-white:#f0f4f8;--muted:#8fa3bc;--border:rgba(255,255,255,.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100vh;background:var(--dark);color:var(--white);font-family:'Barlow',sans-serif}
+
+.header{background:linear-gradient(135deg,rgba(201,169,97,.12),var(--dark));border-bottom:2px solid var(--gold);padding:20px 40px;display:flex;justify-content:space-between;align-items:center}
+.header h1{font-family:'Playfair Display';font-size:26px;color:var(--gold-light)}
+.header .meta{font-size:13px;color:var(--muted);margin-top:3px}
+.hud{display:flex;gap:24px;align-items:center}
+.hud-item{text-align:center}
+.hud-val{font-family:'Barlow Condensed';font-size:32px;font-weight:800}
+.hud-val.score-disp{color:var(--gold-light)}
+.hud-val.timer-disp{color:var(--white)}
+.hud-val.timer-disp.warn{color:var(--amber);animation:blink 1s infinite}
+.hud-val.timer-disp.crit{color:var(--red);animation:blink .4s infinite}
+@keyframes blink{50%{opacity:.4}}
+.hud-lbl{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.progress-wrap{height:5px;background:rgba(255,255,255,.06)}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold));transition:width .4s}
+
+/* SCREENS */
+.screen{display:none;animation:fadeIn .4s ease}
+.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* START SCREEN */
+#screen-start{max-width:760px;margin:0 auto;padding:60px 24px;text-align:center}
+#screen-start h2{font-family:'Playfair Display';font-size:52px;color:var(--gold-light);margin-bottom:16px}
+#screen-start p{font-size:18px;color:var(--muted);margin-bottom:40px}
+.rules-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:40px;text-align:left}
+.rule-card{background:rgba(27,54,93,.55);border:1px solid var(--border);border-radius:10px;padding:20px 22px;border-left:3px solid var(--gold)}
+.rule-card .icon{font-size:28px;margin-bottom:8px;display:block}
+.rule-card p{font-size:15px;color:var(--muted);line-height:1.5}
+.rule-card strong{color:var(--white)}
+.btn-main{font-family:'Barlow Condensed';font-size:24px;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:18px 56px;background:linear-gradient(90deg,var(--green),var(--gold));color:var(--dark);border:none;border-radius:999px;cursor:pointer;box-shadow:0 12px 40px rgba(46,139,87,.3);transition:all .3s}
+.btn-main:hover{transform:translateY(-3px);box-shadow:0 18px 50px rgba(46,139,87,.45)}
+
+/* GAME */
+#screen-game{max-width:1100px;margin:0 auto;padding:32px 24px}
+.game-title{font-family:'Barlow Condensed';font-size:14px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-bottom:20px;text-align:center}
+.epp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:24px}
+.epp-card{background:linear-gradient(160deg,rgba(27,54,93,.7),rgba(13,31,53,.7));border:2px solid var(--border);border-radius:14px;padding:20px;text-align:center;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.epp-card:hover:not(.judged){transform:translateY(-4px);border-color:rgba(201,169,97,.4);box-shadow:0 12px 32px rgba(0,0,0,.3)}
+.epp-card.judged{cursor:default;transform:none}
+.epp-card.correct-apt{border-color:var(--green-light);background:rgba(46,139,87,.12)}
+.epp-card.correct-rej{border-color:var(--green-light);background:rgba(46,139,87,.12)}
+.epp-card.wrong-apt{border-color:var(--red);background:rgba(224,82,82,.1)}
+.epp-card.wrong-rej{border-color:var(--red);background:rgba(224,82,82,.1)}
+.epp-icon{font-size:48px;display:block;margin-bottom:12px;transition:all .3s;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4))}
+.epp-name{font-family:'Barlow Condensed';font-size:16px;font-weight:800;color:var(--off-white);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.epp-defect{font-size:12px;color:var(--muted);line-height:1.4;min-height:32px}
+.epp-badge{position:absolute;top:10px;right:10px;font-size:10px;font-family:'Barlow Condensed';padding:3px 8px;border-radius:999px;font-weight:800;letter-spacing:1px}
+.badge-defect{background:rgba(224,82,82,.2);color:#ff9090;border:1px solid rgba(224,82,82,.3)}
+.badge-ok{background:rgba(46,139,87,.2);color:var(--green-light);border:1px solid rgba(46,139,87,.3)}
+.judgment-btns{display:flex;gap:8px;margin-top:14px;justify-content:center;opacity:0;transition:opacity .2s}
+.epp-card:hover:not(.judged) .judgment-btns{opacity:1}
+.j-btn{flex:1;padding:8px 6px;font-family:'Barlow Condensed';font-size:14px;font-weight:800;letter-spacing:1px;border-radius:6px;border:none;cursor:pointer;transition:all .2s}
+.j-btn.apt{background:rgba(46,139,87,.25);color:var(--green-light);border:1px solid rgba(46,139,87,.4)}
+.j-btn.apt:hover{background:rgba(46,139,87,.5)}
+.j-btn.rej{background:rgba(224,82,82,.15);color:#ff9090;border:1px solid rgba(224,82,82,.3)}
+.j-btn.rej:hover{background:rgba(224,82,82,.35)}
+.result-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(8,15,26,.85);border-radius:12px;font-size:48px;display:none}
+.epp-card.judged .result-overlay{display:flex}
+.result-overlay .verdict{font-family:'Barlow Condensed';font-size:13px;font-weight:800;letter-spacing:1px;margin-top:8px}
+.result-overlay.ok .verdict{color:var(--green-light)}
+.result-overlay.fail .verdict{color:var(--red)}
+
+/* LOG */
+.log-panel{background:rgba(13,31,53,.6);border:1px solid var(--border);border-radius:12px;padding:20px 24px;max-height:180px;overflow-y:auto}
+.log-panel h3{font-family:'Barlow Condensed';font-size:13px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:12px}
+.log-entry{display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-top:1px solid var(--border);font-size:14px;color:var(--muted)}
+.log-entry:first-of-type{border-top:none}
+.log-entry .icon{font-size:18px;min-width:24px}
+.log-entry .txt strong{color:var(--white)}
+
+/* RESULTS */
+#screen-result{max-width:760px;margin:0 auto;padding:60px 24px;text-align:center}
+.result-ring{width:160px;height:160px;margin:0 auto 32px;position:relative}
+.result-ring svg{transform:rotate(-90deg)}
+.ring-txt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-score{font-family:'Barlow Condensed';font-size:44px;font-weight:800;color:var(--gold-light)}
+.ring-lbl{font-size:11px;color:var(--muted);letter-spacing:1px}
+.result-verdict{font-family:'Playfair Display';font-size:44px;margin-bottom:16px}
+.result-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:32px 0}
+.rc{background:rgba(27,54,93,.5);border:1px solid var(--border);border-radius:10px;padding:18px;text-align:center}
+.rc .n{font-family:'Barlow Condensed';font-size:32px;font-weight:800;margin-bottom:4px}
+.rc .l{font-size:13px;color:var(--muted)}
+.rc.good .n{color:var(--green-light)}
+.rc.bad .n{color:var(--red)}
+.rc.neutral .n{color:var(--gold-light)}
+.detail-table{width:100%;border-collapse:collapse;font-size:14px;margin-bottom:24px;text-align:left}
+.detail-table th{font-family:'Barlow Condensed';font-size:12px;color:var(--gold-light);letter-spacing:1px;padding:8px 12px;border-bottom:1px solid var(--border);text-transform:uppercase}
+.detail-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--off-white)}
+.detail-table tr:last-child td{border-bottom:none}
+</style>
+</head>
+<body>
+<header class="header">
+  <div>
+    <h1>🏆 Competencia de Inspección EPP</h1>
+    <div class="meta">Identifica los equipos defectuosos antes de que el tiempo acabe · Vértice EHS</div>
+  </div>
+  <div class="hud">
+    <div class="hud-item"><div class="hud-val timer-disp" id="timerHud">05:00</div><div class="hud-lbl">Tiempo</div></div>
+    <div class="hud-item"><div class="hud-val score-disp" id="scoreHud">0</div><div class="hud-lbl">Puntos</div></div>
+    <div class="hud-item"><div class="hud-val" id="leftHud" style="color:var(--muted)">10</div><div class="hud-lbl">Pendientes</div></div>
+  </div>
+</header>
+<div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+<!-- START -->
+<div class="screen active" id="screen-start">
+  <h2>¿Apto o Rechazar?</h2>
+  <p>Se te presentarán <strong style="color:var(--white)">10 equipos de protección personal</strong>. Algunos tienen defectos ocultos que los hacen peligrosos. Tu misión es identificar cuáles son APTOS para uso y cuáles deben ser RECHAZADOS.</p>
+  <div class="rules-grid">
+    <div class="rule-card"><span class="icon">⏱️</span><p><strong>5 minutos</strong> para evaluar los 10 equipos</p></div>
+    <div class="rule-card"><span class="icon">✅</span><p><strong>+10 puntos</strong> por cada decisión correcta</p></div>
+    <div class="rule-card"><span class="icon">❌</span><p><strong>-5 puntos</strong> por cada decisión incorrecta</p></div>
+    <div class="rule-card"><span class="icon">🔍</span><p>Pasa el cursor sobre el equipo para ver la <strong>descripción del estado</strong></p></div>
+  </div>
+  <button class="btn-main" id="btnStart">🔍 INICIAR INSPECCIÓN</button>
+</div>
+
+<!-- GAME -->
+<div class="screen" id="screen-game">
+  <div style="margin:0 auto;max-width:1100px;padding:32px 24px">
+    <div class="game-title">Inspecciona cada equipo y decide: ¿APTO para uso o RECHAZAR?</div>
+    <div class="epp-grid" id="eppGrid"></div>
+    <div class="log-panel"><h3>📋 Registro de Inspección</h3><div id="logEntries"></div></div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="screen" id="screen-result">
+  <div class="result-ring">
+    <svg width="160" height="160" viewBox="0 0 160 160">
+      <circle cx="80" cy="80" r="68" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="16"/>
+      <circle cx="80" cy="80" r="68" fill="none" stroke="var(--gold)" stroke-width="16" stroke-linecap="round" id="ringArc" stroke-dasharray="427" stroke-dashoffset="427"/>
+    </svg>
+    <div class="ring-txt"><div class="ring-score" id="finalScore">0</div><div class="ring-lbl">/ 100 pts</div></div>
+  </div>
+  <div class="result-verdict" id="resultVerdict">—</div>
+  <p style="color:var(--muted);margin-bottom:24px" id="resultMsg"></p>
+  <div class="result-cards" id="resultCards"></div>
+  <table class="detail-table" id="detailTable">
+    <thead><tr><th>EPP</th><th>Tu Decisión</th><th>Correcto</th><th>Estado Real</th></tr></thead>
+    <tbody id="detailBody"></tbody>
+  </table>
+  <button class="btn-main" onclick="location.reload()" style="font-size:18px;padding:14px 40px;background:linear-gradient(90deg,var(--navy-mid),var(--navy));color:var(--white)">🔄 Nueva Inspección</button>
+</div>
+
+<script>
+const EPP_ITEMS = [
+  {
+    icon:'🪖', name:'Casco de Seguridad',
+    defective: true,
+    defect: 'Presenta grieta en la capa interna visible al trasluz. Fecha de fabricación: 2016 (>10 años)',
+    verdict_text: 'Casco con grieta interna y vida útil vencida. Debe rechazarse: las grietas reducen la capacidad de absorción de impacto hasta un 70%.',
+    badge:'DEFECTO'
+  },
+  {
+    icon:'🥽', name:'Gafas de Seguridad',
+    defective: false,
+    defect: 'Lentes templados, sin rayaduras significativas. Patillas íntegras. Fecha: 2024.',
+    verdict_text: 'Gafas en buen estado. Aptas para uso con protección UV y anti-impacto certificada.',
+    badge:'OK'
+  },
+  {
+    icon:'🦺', name:'Arnés Clase 3',
+    defective: true,
+    defect: 'Costura del punto de conexión dorsal con hilo cortado en 3 puntos. Sin registro de caída pero visible desgaste.',
+    verdict_text: 'Arnés RECHAZADO: cualquier daño en costuras del punto dorsal invalida el equipo completamente. El arnés podría fallar bajo carga de caída.',
+    badge:'DEFECTO'
+  },
+  {
+    icon:'🧤', name:'Guantes de Trabajo',
+    defective: false,
+    defect: 'Guantes de cuero resistentes al corte nivel B. Sin perforaciones ni cortes. Talla XL.',
+    verdict_text: 'Guantes aptos. Nivel de protección al corte B verificado, sin daños visibles.',
+    badge:'OK'
+  },
+  {
+    icon:'👟', name:'Botas de Seguridad',
+    defective: true,
+    defect: 'La bota derecha tiene la suela completamente despegada en la zona del talón. El cap de acero no es visible externamente.',
+    verdict_text: 'Botas RECHAZADAS: suela despegada elimina la protección antideslizante y puede causar tropiezo. El cap de acero podría no estar correctamente posicionado.',
+    badge:'DEFECTO'
+  },
+  {
+    icon:'😷', name:'Respirador N95',
+    defective: true,
+    defect: 'Respirador sin sello hermético: la espuma de sellado facial está comprimida y deformada. Expirado: 06/2023.',
+    verdict_text: 'Respirador RECHAZADO: sellado facial comprometido reduce la eficiencia de filtración. Además, expirado según fecha del fabricante.',
+    badge:'DEFECTO'
+  },
+  {
+    icon:'🔦', name:'Linterna de Seguridad ATEX',
+    defective: false,
+    defect: 'Certificación ATEX zona 1. Batería cargada al 80%. Sin daños en la carcasa. Último servicio: enero 2026.',
+    verdict_text: 'Linterna ATEX apta. Certificación vigente y sin daños estructurales.',
+    badge:'OK'
+  },
+  {
+    icon:'🎯', name:'Línea de Vida',
+    defective: true,
+    defect: 'Absorbedor de impacto desplegado. La cubierta del absorbedor está desgarrada, lo que indica que el equipo absorbió una caída previa.',
+    verdict_text: 'Línea de vida RECHAZADA: el absorbedor desplegado confirma que el equipo ya absorbió una caída. Un absorbedor no puede ser reutilizado después de una caída.',
+    badge:'DEFECTO'
+  },
+  {
+    icon:'🦻', name:'Protectores Auditivos',
+    defective: false,
+    defect: 'Tapones de espuma NRR 33dB. Sin deformación permanente. En embalaje individual intacto.',
+    verdict_text: 'Tapones aptos. NRR 33dB cumple con protección requerida para área de >100 dB.',
+    badge:'OK'
+  },
+  {
+    icon:'🔒', name:'Candado LOTO',
+    defective: true,
+    defect: 'Candado con la etiqueta de identificación del trabajador en blanco. La llave está atascada y no gira correctamente.',
+    verdict_text: 'Candado LOTO RECHAZADO: sin identificación del trabajador autorizado y con llave defectuosa. Un candado LOTO debe ser individual, identificado y funcional.',
+    badge:'DEFECTO'
+  }
+];
+
+let score = 0;
+let judged = 0;
+let results = [];
+let timerInterval;
+let timeLeft = 5 * 60;
+
+function buildGrid() {
+  const grid = document.getElementById('eppGrid');
+  EPP_ITEMS.forEach((item, i) => {
+    const card = document.createElement('div');
+    card.className = 'epp-card';
+    card.id = `card-${i}`;
+    card.innerHTML = `
+      <div class="epp-badge ${item.defective?'badge-defect':'badge-ok'}" style="opacity:0" id="badge-${i}">${item.badge}</div>
+      <span class="epp-icon">${item.icon}</span>
+      <div class="epp-name">${item.name}</div>
+      <div class="epp-defect" id="defect-${i}" style="color:var(--muted);font-size:12px;margin-bottom:8px;line-height:1.4;height:0;overflow:hidden;transition:height .3s">${item.defect}</div>
+      <div class="judgment-btns">
+        <button class="j-btn apt" onclick="judge(${i}, false)">✅ APTO</button>
+        <button class="j-btn rej" onclick="judge(${i}, true)">❌ RECHAZAR</button>
+      </div>
+      <div class="result-overlay" id="overlay-${i}"></div>`;
+    card.addEventListener('mouseenter', () => {
+      if (!card.classList.contains('judged')) {
+        const defEl = document.getElementById(`defect-${i}`);
+        defEl.style.height = defEl.scrollHeight + 'px';
+      }
+    });
+    card.addEventListener('mouseleave', () => {
+      if (!card.classList.contains('judged')) {
+        document.getElementById(`defect-${i}`).style.height = '0';
+      }
+    });
+    grid.appendChild(card);
+  });
+}
+
+function judge(idx, rejected) {
+  const item = EPP_ITEMS[idx];
+  const card = document.getElementById(`card-${idx}`);
+  if (card.classList.contains('judged')) return;
+
+  const isCorrect = rejected === item.defective;
+  judged++;
+  results[idx] = { rejected, isCorrect };
+
+  if (isCorrect) {
+    score += 10;
+    card.classList.add('judged', rejected ? 'correct-rej' : 'correct-apt');
+    const overlay = document.getElementById(`overlay-${idx}`);
+    overlay.className = 'result-overlay ok';
+    overlay.innerHTML = `<span>${rejected ? '✋' : '✅'}</span><div class="verdict">${rejected ? 'RECHAZADO ✓' : 'APTO ✓'}</div>`;
+    addLog(item, true, rejected);
+  } else {
+    score = Math.max(0, score - 5);
+    card.classList.add('judged', rejected ? 'wrong-rej' : 'wrong-apt');
+    const overlay = document.getElementById(`overlay-${idx}`);
+    overlay.className = 'result-overlay fail';
+    overlay.innerHTML = `<span>${rejected ? '❌' : '⚠️'}</span><div class="verdict">${rejected ? 'ERROR' : 'ERROR'}</div>`;
+    addLog(item, false, rejected);
+  }
+  // show badge
+  document.getElementById(`badge-${idx}`).style.opacity = '1';
+  // show defect
+  const defEl = document.getElementById(`defect-${idx}`);
+  defEl.style.height = defEl.scrollHeight + 'px';
+
+  document.getElementById('scoreHud').textContent = score;
+  const remaining = EPP_ITEMS.length - judged;
+  document.getElementById('leftHud').textContent = remaining;
+  document.getElementById('progressFill').style.width = (judged/EPP_ITEMS.length*100)+'%';
+
+  if (judged === EPP_ITEMS.length) {
+    clearInterval(timerInterval);
+    setTimeout(showResults, 800);
+  }
+}
+
+function addLog(item, correct, rejected) {
+  const log = document.getElementById('logEntries');
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  entry.innerHTML = `<span class="icon">${correct?'✅':'❌'}</span>
+    <div class="txt"><strong>${item.icon} ${item.name}</strong>: ${rejected?'Rechazado':'Aprobado'} — ${correct?'Correcto':'Incorrecto'} ${correct?'(+10)':'(-5)'}</div>`;
+  log.insertBefore(entry, log.firstChild);
+}
+
+function showResults() {
+  document.getElementById('screen-game').classList.remove('active');
+  const s = document.getElementById('screen-result');
+  s.classList.add('active');
+
+  const pct = Math.min(100, score);
+  const correct = results.filter(r=>r&&r.isCorrect).length;
+  const passed = pct >= 70;
+
+  const arc = document.getElementById('ringArc');
+  setTimeout(() => {
+    arc.style.transition = 'stroke-dashoffset 1.2s ease';
+    arc.style.strokeDashoffset = 427 - (pct/100)*427;
+  }, 200);
+  document.getElementById('finalScore').textContent = pct;
+  document.getElementById('resultVerdict').textContent = passed ? '🏆 ¡Inspector Calificado!' : '📋 Sigue practicando';
+  document.getElementById('resultMsg').textContent = passed
+    ? `Tomaste decisiones acertadas en ${correct} de 10 equipos. Tu ojo clínico puede salvar vidas.`
+    : `Acertaste ${correct} de 10. Recuerda que aprobar EPP defectuoso puede causar un accidente grave.`;
+
+  document.getElementById('resultCards').innerHTML = `
+    <div class="rc good"><div class="n">${correct}</div><div class="l">Decisiones correctas</div></div>
+    <div class="rc bad"><div class="n">${results.filter(r=>r&&!r.isCorrect).length}</div><div class="l">Decisiones incorrectas</div></div>
+    <div class="rc neutral"><div class="n">${pct}</div><div class="l">Puntos finales</div></div>`;
+
+  const tbody = document.getElementById('detailBody');
+  EPP_ITEMS.forEach((item, i) => {
+    const r = results[i];
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${item.icon} ${item.name}</td>
+      <td style="color:${r&&r.isCorrect?'var(--green-light)':'var(--red)'}">${r ? (r.rejected?'❌ Rechazado':'✅ Apto') : '—'}</td>
+      <td style="color:var(--green-light)">${item.defective?'❌ RECHAZAR':'✅ APTO'}</td>
+      <td style="font-size:12px;color:var(--muted)">${item.verdict_text.substring(0,80)}...</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// TIMER
+function startTimer() {
+  const el = document.getElementById('timerHud');
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    const m = Math.floor(timeLeft/60), s = timeLeft%60;
+    el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if (timeLeft<=60 && timeLeft>30) el.className='hud-val timer-disp warn';
+    if (timeLeft<=30) el.className='hud-val timer-disp crit';
+    if (timeLeft<=0) { clearInterval(timerInterval); showResults(); }
+  }, 1000);
+}
+
+document.getElementById('btnStart').addEventListener('click', () => {
+  document.getElementById('screen-start').classList.remove('active');
+  document.getElementById('screen-game').classList.add('active');
+  buildGrid();
+  startTimer();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dinámica 2: Selección y Clasificación de EPP | Vértice EHS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1B365D;
+      --primary-light: #2c4a75;
+      --accent: #ff6b35;
+      --accent-glow: rgba(255, 107, 53, 0.4);
+      --bg-dark: #091322;
+      --bg-card: rgba(18, 37, 67, 0.55);
+      --white: #ffffff;
+      --success: #3aaf6d;
+      --warning: #ed8936;
+      --error: #f56565;
+      --border: rgba(255, 255, 255, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 1000px;
+      width: 100%;
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    header {
+      text-align: center;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 16px;
+    }
+
+    h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 2rem;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .instructions {
+      font-size: 0.95rem;
+      color: #cbd5e0;
+      margin-top: 8px;
+    }
+
+    /* Layout */
+    .columns-container {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .columns-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Items source list */
+    .items-source {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .epp-item {
+      background: var(--primary-light);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .epp-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      border-color: var(--accent);
+    }
+
+    .epp-item.selected {
+      background: var(--accent);
+      border-color: var(--white);
+      transform: scale(1.02);
+    }
+
+    .epp-item.placed {
+      opacity: 0.3;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .epp-icon {
+      font-size: 1.5rem;
+    }
+
+    /* Categories destinations */
+    .categories-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .category-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      min-height: 130px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: all 0.3s;
+    }
+
+    .category-box.highlight {
+      border-color: var(--accent);
+      background: rgba(255, 107, 53, 0.05);
+    }
+
+    .category-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.15rem;
+      text-transform: uppercase;
+      color: var(--accent-light);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+    }
+
+    .placed-items-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 50px;
+    }
+
+    .placed-item {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .placed-item.correct {
+      border-color: var(--success);
+      color: #a3e635;
+    }
+
+    .placed-item.incorrect {
+      border-color: var(--error);
+      color: #fca5a5;
+    }
+
+    .placed-item-remove {
+      cursor: pointer;
+      color: #a0aec0;
+      font-weight: bold;
+    }
+    
+    .placed-item-remove:hover {
+      color: var(--white);
+    }
+
+    /* Status row */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .action-btn {
+      background: var(--accent);
+      border: none;
+      border-radius: 6px;
+      color: var(--white);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      padding: 12px 24px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .action-btn:hover {
+      background: #e0531c;
+    }
+
+    .action-btn:disabled {
+      background: #4a5568;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Clasificación y Selección de EPP</h1>
+      <p class="instructions">Haga clic en un elemento de equipo en la lista izquierda y luego haga clic en la categoría destino correspondiente para clasificarlo. Debe clasificar los 9 elementos.</p>
+    </header>
+
+    <div class="columns-container">
+      <!-- Items to Sort -->
+      <div class="items-source" id="items-container">
+        <!-- Loaded dynamically -->
+      </div>
+
+      <!-- Target Categories -->
+      <div class="categories-grid">
+        <!-- Category 1 -->
+        <div class="category-box" id="cat-1" onclick="placeSelectedItem(1)">
+          <div class="category-title">🛡️ Sistemas de Protección Contra Caídas</div>
+          <div class="placed-items-list" id="placed-cat-1"></div>
+        </div>
+
+        <!-- Category 2 -->
+        <div class="category-box" id="cat-2" onclick="placeSelectedItem(2)">
+          <div class="category-title">🦺 EPP Básico Obligatorio</div>
+          <div class="placed-items-list" id="placed-cat-2"></div>
+        </div>
+
+        <!-- Category 3 -->
+        <div class="category-box" id="cat-3" onclick="placeSelectedItem(3)">
+          <div class="category-title">🔧 Accesorios y Conectores de Altura</div>
+          <div class="placed-items-list" id="placed-cat-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status and Sync -->
+    <div class="status-bar">
+      <div>
+        <span>Progreso: <strong id="progress-val">0 / 9</strong> clasificados</span>
+      </div>
+      <button class="action-btn" id="btn-submit" disabled onclick="submitEPPScore()">Guardar Calificación en Hub</button>
+    </div>
+  </div>
+
+  <script>
+    // Get query parameters and handle standalone mode
+    let participantId = new URLSearchParams(window.location.search).get('participantId');
+    if (!participantId && window.parent === window) {
+      const nombre = prompt("Ingrese su nombre completo para registrar la actividad:");
+      if (nombre && nombre.trim() !== '') {
+        participantId = "EXT-" + Date.now().toString().slice(-6);
+        const raw = localStorage.getItem('ehs_training_state');
+        let state = raw ? JSON.parse(raw) : { participants: [] };
+        state.participants.push({
+          id: participantId, nombre: nombre, email: '',
+          dia1_completado: false, dia1_progreso: 0, dia2_completado: false, dia2_progreso: 0,
+          simulador_riesgos_score: 0, dinamica_epp_score: 0, simulador_arnes_score: 0,
+          dinamica_investigacion_score: 0, dinamica_liderazgo_score: 0, rol_play_supervisor_score: 0,
+          examen_pendiente: true, examen_score: null, examen_aprobado: null, notas_facilitador: ''
+        });
+        localStorage.setItem('ehs_training_state', JSON.stringify(state));
+      } else {
+        participantId = 'ING-001';
+      }
+    } else if (!participantId) {
+      participantId = 'ING-001';
+    }
+
+    const eppItems = [
+      { id: 'item-1', name: "Arnés Multipropósito 4 Argollas", icon: "🦺", correctCat: 1 },
+      { id: 'item-2', name: "Línea de Posicionamiento Graduable", icon: "🛹", correctCat: 3 },
+      { id: 'item-3', name: "Eslinga Doble Terminal con Absorbedor", icon: "🎗️", correctCat: 1 },
+      { id: 'item-4', name: "Casco de Seguridad Clase E con Barbiquejo", icon: "🪖", correctCat: 2 },
+      { id: 'item-5', name: "Calzado de Seguridad Dieléctrico", icon: "🥾", correctCat: 2 },
+      { id: 'item-6', name: "Mosquetón de Acero Triple Cierre (Auto-lock)", icon: "🔗", correctCat: 3 },
+      { id: 'item-7', name: "Adaptador de Anclaje Portátil (Tie-off)", icon: "🌀", correctCat: 3 },
+      { id: 'item-8', name: "Lentes de Seguridad Resistentes a Impacto", icon: "👓", correctCat: 2 },
+      { id: 'item-9', name: "Línea de Vida Retráctil de 10 Metros", icon: "🔄", correctCat: 1 }
+    ];
+
+    let selectedItemId = null;
+    const placements = {}; // itemId -> catId
+
+    // Render items
+    function renderItems() {
+      const container = document.getElementById("items-container");
+      container.innerHTML = "";
+      
+      eppItems.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "epp-item";
+        div.id = item.id;
+        
+        if (placements[item.id]) {
+          div.classList.add("placed");
+        } else if (selectedItemId === item.id) {
+          div.classList.add("selected");
+        }
+        
+        div.innerHTML = `<span class="epp-icon">${item.icon}</span> <span>${item.name}</span>`;
+        div.onclick = (e) => {
+          e.stopPropagation();
+          selectItem(item.id);
+        };
+        
+        container.appendChild(div);
+      });
+    }
+
+    function selectItem(itemId) {
+      if (placements[itemId]) return; // already placed
+      selectedItemId = itemId;
+      renderItems();
+      
+      // highlight categories boxes
+      document.querySelectorAll(".category-box").forEach(box => {
+        box.classList.add("highlight");
+      });
+    }
+
+    function placeSelectedItem(catId) {
+      if (!selectedItemId) return;
+      
+      placements[selectedItemId] = catId;
+      selectedItemId = null;
+      
+      // clear highlight
+      document.querySelectorAll(".category-box").forEach(box => {
+        box.classList.remove("highlight");
+      });
+      
+      updatePlacementsUI();
+      renderItems();
+    }
+
+    function removePlacement(itemId) {
+      delete placements[itemId];
+      updatePlacementsUI();
+      renderItems();
+    }
+
+    function updatePlacementsUI() {
+      // Clear all placed slots
+      document.getElementById("placed-cat-1").innerHTML = "";
+      document.getElementById("placed-cat-2").innerHTML = "";
+      document.getElementById("placed-cat-3").innerHTML = "";
+      
+      let count = 0;
+      
+      for (const itemId in placements) {
+        count++;
+        const item = eppItems.find(i => i.id === itemId);
+        const catId = placements[itemId];
+        
+        const div = document.createElement("div");
+        div.className = "placed-item";
+        div.innerHTML = `
+          <span>${item.icon} ${item.name}</span>
+          <span class="placed-item-remove" onclick="event.stopPropagation(); removePlacement('${itemId}')">✕</span>
+        `;
+        
+        document.getElementById(`placed-cat-${catId}`).appendChild(div);
+      }
+      
+      document.getElementById("progress-val").textContent = `${count} / 9`;
+      document.getElementById("btn-submit").disabled = (count < 9);
+    }
+
+    function submitEPPScore() {
+      let correctCount = 0;
+      
+      eppItems.forEach(item => {
+        const placedCat = placements[item.id];
+        if (placedCat === item.correctCat) {
+          correctCount++;
+        }
+      });
+      
+      const score = Math.round((correctCount / 9) * 100);
+      
+      // Show correct/incorrect icons
+      eppItems.forEach(item => {
+        const placedCat = placements[item.id];
+        const isCorrect = (placedCat === item.correctCat);
+        
+        // Find in UI
+        const elements = document.getElementById(`placed-cat-${placedCat}`).children;
+        for (let el of elements) {
+          if (el.textContent.includes(item.name)) {
+            el.classList.add(isCorrect ? "correct" : "incorrect");
+            // remove exit button
+            const removeBtn = el.querySelector(".placed-item-remove");
+            if (removeBtn) removeBtn.style.display = "none";
+          }
+        }
+      });
+      
+      // Save to hub state via window.parent or standalone LocalStorage
+      if (window.parent && window.parent.participantManager) {
+        window.parent.participantManager.actualizarProgreso(participantId, 'epp', score);
+        if (window.parent.app && window.parent.app.showToast) {
+          window.parent.app.showToast({
+            type: 'success',
+            message: `¡Clasificación EPP completada! Aciertos: ${correctCount}/9. Nota: ${score}/100.`
+          });
+        }
+      } else {
+        try {
+          const raw = localStorage.getItem('ehs_training_state');
+          if (raw) {
+            let state = JSON.parse(raw);
+            let p = state.participants.find(p => p.id === participantId);
+            if (p) {
+              p.dinamica_epp_score = score;
+              localStorage.setItem('ehs_training_state', JSON.stringify(state));
+              alert(`¡Actividad Completada!\nPuntaje guardado exitosamente: ${score}/100.\nYa puede cerrar esta pestaña.`);
+            } else {
+              alert(`Offline Mode: Score computed is ${score}/100 (${correctCount}/9 items correct).`);
+            }
+          } else {
+            alert(`Offline Mode: Score computed is ${score}/100 (${correctCount}/9 items correct).`);
+          }
+        } catch (e) {
+          alert(`Offline Mode: Score computed is ${score}/100 (${correctCount}/9 items correct).`);
+        }
+      }
+
+      // Disable actions
+      document.getElementById("btn-submit").disabled = true;
+      document.getElementById("btn-submit").textContent = "Puntaje Registrado";
+      
+      // Disable source click selection
+      document.querySelectorAll(".epp-item").forEach(item => item.style.pointerEvents = "none");
+      document.querySelectorAll(".category-box").forEach(box => box.onclick = null);
+    }
+
+    // Init
+    renderItems();
+  </script>
+</body>
+</html>

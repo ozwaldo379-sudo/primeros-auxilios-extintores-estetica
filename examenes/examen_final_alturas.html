@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen Final — Trabajo en Alturas NOM-009 | Vértice EHS</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy-darkest:#080f1a; --navy-dark:#0d1f35; --navy:#1B365D; --navy-mid:#24487a;
+  --green:#2E8B57; --green-light:#3aaf6d; --green-dark:#1a6a3f;
+  --gold:#C9A961; --gold-light:#dfc07a; --gold-dim:rgba(201,169,97,.12);
+  --white:#ffffff; --off-white:#f0f4f8; --muted:#8fa3bc; --border:rgba(255,255,255,.09);
+  --red:#e05252; --red-dim:rgba(224,82,82,.12); --amber:#e09652;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;background:var(--navy-darkest);color:var(--white);font-family:'Barlow',sans-serif}
+body{padding:0 0 60px}
+
+/* HEADER */
+.exam-header{background:linear-gradient(135deg,var(--navy-dark),var(--navy-darkest));border-bottom:3px solid var(--gold);padding:32px 48px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+.exam-header h1{font-family:'Playfair Display';font-size:28px;color:var(--gold-light)}
+.exam-header p{font-size:14px;color:var(--muted);margin-top:4px}
+.timer-wrap{text-align:right}
+.timer-label{font-family:'Barlow Condensed';font-size:13px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.timer{font-family:'Barlow Condensed';font-size:42px;font-weight:800;color:var(--white);line-height:1}
+.timer.warning{color:var(--amber);animation:pulse 1s infinite}
+.timer.critical{color:var(--red);animation:pulse 0.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* PROGRESS */
+.progress-bar-wrap{background:rgba(255,255,255,.06);height:6px;position:relative}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--green),var(--gold));transition:width .4s ease}
+.progress-label{position:absolute;right:12px;top:8px;font-family:'Barlow Condensed';font-size:13px;color:var(--muted);letter-spacing:1px}
+
+/* MAIN */
+.exam-body{max-width:900px;margin:0 auto;padding:40px 24px}
+
+/* SCREEN: START */
+#screen-start{text-align:center;padding:80px 24px}
+#screen-start h2{font-family:'Playfair Display';font-size:56px;margin-bottom:16px}
+#screen-start .sub{font-size:22px;color:var(--muted);margin-bottom:40px}
+.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:700px;margin:0 auto 48px;text-align:left}
+.info-card{background:linear-gradient(160deg,rgba(27,54,93,.74),rgba(13,31,53,.72));border:1px solid var(--border);border-radius:10px;padding:22px;border-left:4px solid var(--gold)}
+.info-card .num{font-family:'Barlow Condensed';font-size:36px;color:var(--gold-light);font-weight:800}
+.info-card .lbl{font-size:14px;color:var(--muted);margin-top:4px}
+
+/* QUESTION CARD */
+.q-card{background:linear-gradient(160deg,rgba(27,54,93,.55),rgba(13,31,53,.55));border:1px solid var(--border);border-radius:14px;padding:36px;margin-bottom:28px;display:none;animation:fadeUp .4s ease both}
+.q-card.visible{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.q-num{font-family:'Barlow Condensed';font-size:13px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.q-type{font-family:'Barlow Condensed';font-size:12px;font-weight:800;padding:4px 12px;border-radius:999px;letter-spacing:1px}
+.type-teorica{background:rgba(91,155,213,.16);color:#7bb8f0;border:1px solid rgba(91,155,213,.3)}
+.type-caso{background:rgba(201,169,97,.14);color:var(--gold-light);border:1px solid rgba(201,169,97,.3)}
+.type-orden{background:rgba(46,139,87,.14);color:var(--green-light);border:1px solid rgba(46,139,87,.3)}
+
+.q-text{font-size:20px;line-height:1.5;color:var(--off-white);margin-bottom:8px;font-weight:500}
+.q-scenario{background:rgba(201,169,97,.08);border:1px solid rgba(201,169,97,.22);border-radius:8px;padding:16px 20px;margin:12px 0 20px;font-size:16px;color:var(--gold-light);font-style:italic}
+.q-scenario .emoji{font-size:32px;display:block;margin-bottom:8px}
+
+/* OPTIONS */
+.options{display:grid;gap:12px;margin-top:20px}
+.option{display:flex;align-items:center;gap:14px;padding:16px 20px;border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .25s ease;background:rgba(255,255,255,.03)}
+.option:hover{border-color:var(--gold);background:var(--gold-dim)}
+.option.selected{border-color:var(--gold-light);background:var(--gold-dim)}
+.option.correct{border-color:var(--green-light);background:rgba(46,139,87,.12);pointer-events:none}
+.option.wrong{border-color:var(--red);background:var(--red-dim);pointer-events:none}
+.option.neutral{opacity:.5;pointer-events:none}
+.option-letter{font-family:'Barlow Condensed';font-size:20px;font-weight:800;color:var(--gold-light);min-width:28px}
+.option-text{font-size:17px;color:var(--off-white);flex:1}
+
+/* FEEDBACK */
+.feedback{display:none;margin-top:16px;padding:16px 20px;border-radius:8px;font-size:15px;line-height:1.5}
+.feedback.show{display:block;animation:fadeUp .3s ease}
+.feedback.ok{background:rgba(46,139,87,.15);border:1px solid rgba(46,139,87,.3);color:#7de8a8}
+.feedback.ko{background:var(--red-dim);border:1px solid rgba(224,82,82,.3);color:#ffaaaa}
+
+/* ORDERING */
+.order-list{display:grid;gap:10px;margin-top:20px}
+.order-item{display:flex;align-items:center;gap:12px;padding:14px 18px;border:1px solid var(--border);border-radius:10px;cursor:grab;background:rgba(255,255,255,.04);user-select:none;transition:border-color .2s}
+.order-item:active{cursor:grabbing;border-color:var(--gold)}
+.order-item.dragging{opacity:.5;border-style:dashed}
+.order-item .handle{font-size:20px;color:var(--muted)}
+.order-item .step-num{font-family:'Barlow Condensed';font-size:22px;font-weight:800;color:var(--gold-light);min-width:32px}
+.order-check-btn{margin-top:16px;padding:12px 28px;font-family:'Barlow Condensed';font-size:18px;font-weight:800;letter-spacing:1px;background:linear-gradient(90deg,var(--navy),var(--navy-mid));color:var(--gold-light);border:1px solid rgba(201,169,97,.35);border-radius:8px;cursor:pointer;transition:all .2s}
+.order-check-btn:hover{background:linear-gradient(90deg,var(--navy-mid),var(--navy));border-color:var(--gold)}
+.order-item.order-correct{border-color:var(--green-light);background:rgba(46,139,87,.1)}
+.order-item.order-wrong{border-color:var(--red);background:var(--red-dim)}
+
+/* NAV BUTTON */
+.q-nav{display:flex;justify-content:flex-end;margin-top:24px;gap:12px}
+.btn-next{font-family:'Barlow Condensed';font-size:20px;font-weight:800;letter-spacing:1px;padding:14px 36px;background:linear-gradient(90deg,var(--green),var(--green-light));color:#fff;border:none;border-radius:999px;cursor:pointer;transition:all .25s;box-shadow:0 8px 24px rgba(46,139,87,.3)}
+.btn-next:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(46,139,87,.45)}
+.btn-next:disabled{opacity:.4;cursor:default;transform:none;box-shadow:none}
+
+/* START BUTTON */
+.btn-start{font-family:'Barlow Condensed';font-size:26px;font-weight:800;letter-spacing:2px;padding:20px 60px;background:linear-gradient(90deg,var(--green),var(--gold));color:#fff;border:none;border-radius:999px;cursor:pointer;box-shadow:0 12px 40px rgba(46,139,87,.35);transition:all .3s;text-transform:uppercase}
+.btn-start:hover{transform:translateY(-4px);box-shadow:0 20px 60px rgba(46,139,97,.55)}
+
+/* RESULTS SCREEN */
+#screen-result{display:none;text-align:center;padding:60px 24px;animation:fadeUp .5s ease}
+.score-ring{width:200px;height:200px;margin:0 auto 40px;position:relative}
+.score-ring svg{transform:rotate(-90deg)}
+.score-ring .ring-text{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.score-ring .score-num{font-family:'Playfair Display';font-size:52px;font-weight:900;color:var(--gold-light)}
+.score-ring .score-label{font-family:'Barlow Condensed';font-size:13px;letter-spacing:2px;color:var(--muted)}
+.result-title{font-family:'Playfair Display';font-size:44px;margin-bottom:16px}
+.result-msg{font-size:20px;color:var(--muted);max-width:600px;margin:0 auto 40px}
+.breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:700px;margin:0 auto 40px;text-align:left}
+.bd-card{background:rgba(27,54,93,.5);border:1px solid var(--border);border-radius:10px;padding:20px}
+.bd-card .bd-num{font-family:'Barlow Condensed';font-size:32px;font-weight:800}
+.bd-card .bd-lbl{font-size:13px;color:var(--muted);margin-top:4px}
+.bd-card.ok .bd-num{color:var(--green-light)}
+.bd-card.ko .bd-num{color:var(--red)}
+.bd-card.pct .bd-num{color:var(--gold-light)}
+.cert-box{background:linear-gradient(160deg,rgba(27,54,93,.8),rgba(13,31,53,.8));border:2px solid var(--gold);border-radius:14px;padding:36px;max-width:600px;margin:0 auto 32px}
+.cert-box h3{font-family:'Playfair Display';font-size:28px;color:var(--gold-light);margin-bottom:8px}
+.cert-box p{color:var(--muted);font-size:16px}
+.cert-badge{display:inline-flex;align-items:center;gap:10px;margin-top:16px;background:linear-gradient(90deg,var(--green-dark),var(--green));color:#fff;font-family:'Barlow Condensed';font-size:18px;font-weight:800;letter-spacing:2px;padding:10px 24px;border-radius:999px}
+
+/* UTIL */
+.hidden{display:none!important}
+.sep{height:4px;background:linear-gradient(90deg,var(--green),transparent);border-radius:4px;margin:32px 0}
+.section-title{font-family:'Barlow Condensed';font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-light);margin-bottom:20px;opacity:.8}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="exam-header">
+  <div>
+    <h1>Examen Final — Trabajo en Alturas</h1>
+    <p>NOM-009-STPS-2011 · Vértice EHS · 2026</p>
+  </div>
+  <div class="timer-wrap">
+    <div class="timer-label">Tiempo restante</div>
+    <div class="timer" id="timer">45:00</div>
+  </div>
+</header>
+
+<!-- PROGRESS -->
+<div class="progress-bar-wrap">
+  <div class="progress-bar" id="progressBar" style="width:0%"></div>
+  <div class="progress-label" id="progressLabel">Pregunta 0 / 20</div>
+</div>
+
+<!-- MAIN BODY -->
+<div class="exam-body">
+
+  <!-- PANTALLA INICIO -->
+  <div id="screen-start">
+    <h2>¡Comencemos!</h2>
+    <p class="sub">Examen final integrador de Trabajo en Alturas</p>
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="num">20</div>
+        <div class="lbl">Preguntas en total</div>
+      </div>
+      <div class="info-card">
+        <div class="num">45</div>
+        <div class="lbl">Minutos para resolver</div>
+      </div>
+      <div class="info-card">
+        <div class="num">70%</div>
+        <div class="lbl">Calificación mínima aprobatoria</div>
+      </div>
+    </div>
+    <p style="color:var(--muted);margin-bottom:36px;font-size:16px">Las preguntas incluyen: selección múltiple teórica, casos prácticos y ordenamiento de procedimientos.</p>
+    <button class="btn-start" id="btnStart">🚀 INICIAR EXAMEN</button>
+  </div>
+
+  <!-- PREGUNTAS (generadas dinámicamente) -->
+  <div id="questions-wrap"></div>
+
+  <!-- PANTALLA RESULTADO -->
+  <div id="screen-result">
+    <div class="score-ring">
+      <svg width="200" height="200" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="85" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="18"/>
+        <circle cx="100" cy="100" r="85" fill="none" stroke="var(--gold)" stroke-width="18" stroke-linecap="round" id="scoreArc" stroke-dasharray="534" stroke-dashoffset="534"/>
+      </svg>
+      <div class="ring-text">
+        <div class="score-num" id="scoreNum">0</div>
+        <div class="score-label">/ 100 pts</div>
+      </div>
+    </div>
+    <div class="result-title" id="resultTitle">Cargando...</div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div class="breakdown" id="breakdown"></div>
+    <div class="cert-box" id="certBox"></div>
+    <button class="btn-start" onclick="location.reload()" style="font-size:18px;padding:14px 40px;background:linear-gradient(90deg,var(--navy-mid),var(--navy))">🔄 Reintentar examen</button>
+  </div>
+
+</div>
+
+<script>
+// ──────────────── BANCO DE PREGUNTAS ────────────────
+const QUESTIONS = [
+  // SECCIÓN 1: TEÓRICAS (10 preguntas)
+  {
+    type: 'teorica',
+    text: '¿Cuál es el umbral de altura a partir del cual aplica la NOM-009-STPS-2011?',
+    options: ['1.0 metro','1.5 metros','1.8 metros','2.0 metros'],
+    answer: 2,
+    feedback: 'Correcto. La NOM-009 aplica a todo trabajo realizado a 1.8 metros o más sobre el nivel de referencia, donde exista riesgo de caída.'
+  },
+  {
+    type: 'teorica',
+    text: '¿Cuál de los siguientes elementos NO es parte obligatoria de un Sistema de Protección Personal Contra Caídas (SPPC)?',
+    options: ['Arnés de cuerpo completo clase 3','Línea de vida con absorbedor de impacto','Casco con barbuquejo clase E','Bolsa de herramientas dieléctrica'],
+    answer: 3,
+    feedback: 'La bolsa de herramientas no forma parte del SPPC aunque se use en trabajos en altura. Los elementos del SPPC son: arnés, conector (línea de vida) y punto de anclaje certificado.'
+  },
+  {
+    type: 'teorica',
+    text: 'Según la NOM-009, ¿qué documento debe elaborarse ANTES de iniciar cualquier trabajo en altura?',
+    options: ['Informe de incidente previo','Análisis de Riesgo (AR) + Permiso de Trabajo','Lista de asistencia firmada','Reporte de EPP entregado'],
+    answer: 1,
+    feedback: 'El Análisis de Riesgo específico para el trabajo y el Permiso de Trabajo son documentos obligatorios previos al inicio de cualquier trabajo en altura según NOM-009 Numeral 5.'
+  },
+  {
+    type: 'teorica',
+    text: '¿Cuánto tiempo máximo puede permanecer un trabajador suspendido en arnés antes de que el síndrome de suspensión represente riesgo de fatalidad?',
+    options: ['5 minutos','15 minutos','30 minutos','60 minutos'],
+    answer: 1,
+    feedback: 'El síndrome de suspensión en arnés puede ser fatal en tan solo 15 minutos. El plan de rescate debe garantizar la recuperación del trabajador en ese tiempo o menos.'
+  },
+  {
+    type: 'teorica',
+    text: '¿Cuál es la obligación del PATRÓN según el Numeral 5 de la NOM-009?',
+    options: [
+      'Proporcionar arnés de segunda mano si el trabajador lo solicita',
+      'Proporcionar EPP certificado sin costo al trabajador y capacitación en su uso',
+      'Permitir que el trabajador use su propio EPP personal',
+      'Documentar el uso de EPP solo cuando ocurra un incidente'
+    ],
+    answer: 1,
+    feedback: 'El patrón está obligado a proporcionar EPP certificado, sin costo para el trabajador, y capacitarlo en su uso correcto antes de la exposición al riesgo.'
+  },
+  {
+    type: 'teorica',
+    text: 'En la jerarquía de controles, ¿cuál es la medida de mayor efectividad para trabajos en altura?',
+    options: ['Uso de EPP (arnés certificado)','Señalización y delimitación del área','Eliminación del riesgo (rediseñar para no subir)','Capacitación del personal'],
+    answer: 2,
+    feedback: 'La eliminación del riesgo, es decir, rediseñar la tarea para que no sea necesario subir a altura, es la medida más efectiva. El EPP es la última barrera y la menos efectiva.'
+  },
+  {
+    type: 'teorica',
+    text: '¿Qué clase de arnés exige la NOM-009 para trabajos con riesgo de caída libre?',
+    options: ['Clase 1 (soporte de cintura)','Clase 2 (semi-cuerpo)','Clase 3 (cuerpo completo)','Cualquier clase certificada'],
+    answer: 2,
+    feedback: 'La NOM-009 exige arnés clase 3 (cuerpo completo) para trabajos con riesgo de caída libre. Las clases 1 y 2 no son suficientes para detener una caída libre.'
+  },
+  {
+    type: 'teorica',
+    text: '¿Cuál de los siguientes NO es un peligro típico en trabajos en altura según NOM-009?',
+    options: ['Caída libre desde el punto de trabajo','Caída de herramientas u objetos','Exposición a ruido industrial','Contacto con energía eléctrica'],
+    answer: 2,
+    feedback: 'La exposición a ruido industrial no es un peligro específico de trabajos en altura. Los peligros típicos de altura son: caída libre, caída de objetos, contacto eléctrico, estrés térmico y falla de EPP.'
+  },
+  {
+    type: 'teorica',
+    text: 'Un trabajador encuentra que el arnés que le asignaron tiene una costura rota en el punto de conexión dorsal. ¿Cuál es la acción correcta?',
+    options: [
+      'Usarlo solo para trabajos de baja altura (≤3 m)',
+      'Reportarlo al supervisor y NO usarlo hasta que sea reemplazado',
+      'Reparar la costura con cinta industrial y documentarlo',
+      'Usarlo si el trabajo es urgente y el riesgo es bajo'
+    ],
+    answer: 1,
+    feedback: 'Un EPP con daño visible debe ser RETIRADO del servicio inmediatamente. No existe un nivel de daño "aceptable" para un arnés. El trabajador tiene el derecho y la obligación de rechazar EPP defectuoso.'
+  },
+  {
+    type: 'teorica',
+    text: '¿Qué información MÍNIMA debe contener el Plan de Trabajo Seguro (PTS) para altura?',
+    options: [
+      'Nombre del trabajador y firma del supervisor',
+      'Descripción de la tarea, peligros identificados, controles, EPP requerido, plan de rescate y responsables',
+      'Lista de EPP entregado y fecha de entrega',
+      'Análisis de costos y tiempo estimado de la tarea'
+    ],
+    answer: 1,
+    feedback: 'El PTS debe incluir descripción de la tarea, peligros identificados, controles a aplicar (por jerarquía), EPP requerido, plan de emergencia/rescate y firma de responsables.'
+  },
+
+  // SECCIÓN 2: CASOS PRÁCTICOS CON ESCENARIO (5 preguntas)
+  {
+    type: 'caso',
+    scenario: '🏗️ ESCENARIO: Un ingeniero debe inspeccionar el techo de una nave industrial a 4.5 metros de altura. El área tiene un andamio disponible pero sin barandal. El trabajador tiene arnés clase 3 certificado y propone anclar la línea de vida a la tubería de agua del techo.',
+    text: '¿Cuál es el ERROR principal en esta situación?',
+    options: [
+      'El andamio no tiene barandal certificado y la tubería de agua no es un punto de anclaje certificado',
+      'La altura de 4.5 m no requiere arnés según la NOM-009',
+      'El arnés clase 3 no es el adecuado para andamio',
+      'El inspector no debería estar en el techo sin el supervisor'
+    ],
+    answer: 0,
+    feedback: 'Hay DOS errores: (1) El andamio sin barandal incumple NOM-009 y no es seguro. (2) La tubería de agua NO es un punto de anclaje certificado —debe ser un anclaje con capacidad mínima de 2,000 kg o 22 kN certificado.'
+  },
+  {
+    type: 'caso',
+    scenario: '⚡ ESCENARIO: Durante un trabajo en altura en un poste de electricidad a 6 metros, el trabajador siente hormigueo en las manos al tocar el arnés metálico. El compañero en tierra nota que el trabajador se ve desorientado.',
+    text: '¿Cuál es la PRIMERA acción del compañero en tierra?',
+    options: [
+      'Subir al poste para ayudar al trabajador',
+      'Llamar al trabajador por su nombre para verificar estado de consciencia y activar plan de emergencia de inmediato',
+      'Esperar 5 minutos por si el trabajador se recupera solo',
+      'Documentar el incidente en el formato correspondiente'
+    ],
+    answer: 1,
+    feedback: 'Ante señales de electrocución, la PRIMERA acción es: verificar estado del trabajador (sin tocarlo si hay energía activa) y ACTIVAR INMEDIATAMENTE el plan de emergencia. Nunca subir sin aislar la energía primero.'
+  },
+  {
+    type: 'caso',
+    scenario: '🦺 ESCENARIO: En una inspección de EPP, encuentras un arnés con las siguientes condiciones: (A) costuras intactas, (B) hebillas funcionales, (C) etiqueta de fecha de fabricación: 2015 (11 años de antigüedad), (D) sin evidencia de caída registrada.',
+    text: 'Según buenas prácticas y NOM-009, ¿cuál es la decisión correcta para este arnés?',
+    options: [
+      'Aprobarlo ya que no tiene daño visible ni registro de caída',
+      'Aprobarlo pero marcarlo para inspección en 6 meses',
+      'Retirarlo de servicio: los fabricantes recomiendan reemplazar arneses después de 10 años, independientemente del estado visual',
+      'Someterlo a prueba de carga antes de decidir'
+    ],
+    answer: 2,
+    feedback: 'La mayoría de fabricantes certificados establecen una vida útil máxima de 10 años desde la fecha de fabricación, independientemente del estado visual. Un arnés de 11 años debe retirarse aunque parezca en buen estado.'
+  },
+  {
+    type: 'caso',
+    scenario: '🌡️ ESCENARIO: Son las 14:00 hrs en un día de verano. La temperatura en el techo de la planta es de 42°C. Un trabajador lleva 2 horas en altura realizando mantenimiento. El supervisor nota que el trabajador se mueve lentamente y dice tener "un poco de mareo".',
+    text: '¿Cuál de los peligros adicionales en altura está manifestándose y cuál es la acción inmediata?',
+    options: [
+      'Caída de objetos — revisar área debajo del trabajador',
+      'Estrés térmico — DETENER trabajo, bajar al trabajador de forma segura, hidratar y monitorear en lugar fresco',
+      'Síndrome de suspensión en arnés — cortar la línea de vida',
+      'Falla de EPP — reemplazar el arnés de inmediato'
+    ],
+    answer: 1,
+    feedback: 'Los síntomas describen estrés térmico (golpe de calor incipiente). La acción es detener el trabajo, descender al trabajador de forma controlada usando el plan de rescate, hidratar y monitorear. El estrés térmico puede derivar en pérdida de consciencia con riesgo de caída.'
+  },
+  {
+    type: 'caso',
+    scenario: '📋 ESCENARIO: El cliente solicita urgentemente terminar una tarea en altura que requiere un permiso de trabajo. El jefe de turno dice: "Es rápido, son solo 20 minutos, no necesitan el permiso". El trabajador tiene su arnés disponible.',
+    text: 'Como trabajador con conocimiento de NOM-009, ¿cuál es tu respuesta correcta?',
+    options: [
+      'Obedecer al jefe de turno ya que tiene autoridad sobre el área',
+      'Aceptar solo si el trabajo toma menos de 10 minutos',
+      'Negarte a iniciar el trabajo sin permiso vigente; el trabajador tiene el derecho de detener trabajos inseguros según NOM-009 Numeral 6',
+      'Hacer el trabajo y documentarlo después como si el permiso hubiera estado vigente'
+    ],
+    answer: 2,
+    feedback: 'La NOM-009 (Numeral 6) establece el derecho del trabajador a negarse a realizar trabajos inseguros sin consecuencias laborales. Ninguna urgencia justifica omitir el permiso de trabajo —esta es la causa #1 de accidentes mortales en altura.'
+  },
+
+  // SECCIÓN 3: ORDENAMIENTO DE PROCEDIMIENTOS (5 preguntas)
+  {
+    type: 'orden',
+    text: 'Ordena los pasos correctos para ponerse un arnés de cuerpo completo clase 3:',
+    items: [
+      'Verificar que todas las hebillas estén sin daño y las costuras intactas (inspección pre-uso)',
+      'Colocarse el arnés sosteniéndolo por el punto de conexión dorsal',
+      'Ajustar las correas del pecho y verificar que quede 2-3 dedos entre arnés y cuerpo',
+      'Conectar la línea de vida al punto de anclaje certificado',
+      'Ajustar pierneras y asegurarse de que los genitales no queden atrapados'
+    ],
+    correctOrder: [0,1,4,2,3],
+    feedback: 'El orden correcto es: (1) Inspección pre-uso, (2) Tomar el arnés, (3) Ajustar pierneras, (4) Ajustar pecho, (5) Conectar al anclaje. La inspección SIEMPRE es primer paso.'
+  },
+  {
+    type: 'orden',
+    text: 'Ordena los pasos del protocolo de rescate cuando un trabajador queda suspendido en arnés:',
+    items: [
+      'Activar plan de emergencia y notificar a EHS (llamada <1 min)',
+      'Bajar al trabajador con sistema de rescate en posición semivertical o con apoyo de piernas',
+      'Evaluar condición del trabajador y buscar signos del síndrome de suspensión',
+      'Garantizar que el rescatista esté equipado y el área esté asegurada',
+      'Trasladar al trabajador a zona segura y activar atención médica'
+    ],
+    correctOrder: [0,3,1,2,4],
+    feedback: 'El protocolo: (1) Notificar, (2) Asegurar al rescatista, (3) Descender al trabajador, (4) Evaluar condición, (5) Atención médica. NUNCA descender sin equipo al rescatista.'
+  },
+  {
+    type: 'orden',
+    text: 'Ordena las etapas para elaborar un Análisis de Riesgo (AR) para trabajo en altura:',
+    items: [
+      'Definir los controles para cada peligro usando jerarquía de controles',
+      'Identificar la tarea específica a realizar y sus pasos',
+      'Identificar todos los peligros presentes en el área y la tarea',
+      'Documentar el AR y obtener firmas de autorización',
+      'Evaluar el nivel de riesgo (Probabilidad × Severidad) para cada peligro'
+    ],
+    correctOrder: [1,2,4,0,3],
+    feedback: 'Orden: (1) Definir la tarea, (2) Identificar peligros, (3) Evaluar riesgo, (4) Definir controles, (5) Documentar y autorizar. El AR debe seguir siempre este flujo lógico.'
+  },
+  {
+    type: 'orden',
+    text: 'Ordena la jerarquía de controles de mayor a menor efectividad:',
+    items: [
+      'Controles de ingeniería (barandales, líneas de vida fijas)',
+      'EPP (arnés, casco, línea de vida personal)',
+      'Eliminación del riesgo (rediseñar para no subir)',
+      'Controles administrativos (PTS, permisos, señalización)',
+      'Sustitución (plataforma elevadora en lugar de andamio manual)'
+    ],
+    correctOrder: [2,4,0,3,1],
+    feedback: 'La jerarquía de mayor a menor efectividad: (1) Eliminación, (2) Sustitución, (3) Ingeniería, (4) Administrativo, (5) EPP. El EPP siempre es la ÚLTIMA barrera.'
+  },
+  {
+    type: 'orden',
+    text: 'Ordena las acciones al detectar un arnés con defecto durante la inspección pre-uso:',
+    items: [
+      'Retirar el arnés del servicio y marcarlo físicamente como "NO USAR"',
+      'Reportar el hallazgo al supervisor de EHS',
+      'Inspeccionar visualmente el arnés (costuras, hebillas, etiquetas, conectores)',
+      'Solicitar arnés de reemplazo certificado antes de iniciar el trabajo',
+      'Documentar el hallazgo en el registro de inspección de EPP'
+    ],
+    correctOrder: [2,0,4,1,3],
+    feedback: 'Proceso: (1) Inspeccionar, (2) Retirar físicamente, (3) Documentar, (4) Reportar, (5) Solicitar reemplazo. El retiro físico INMEDIATO evita que alguien más use el EPP defectuoso.'
+  }
+];
+
+// ──────────────── ESTADO ────────────────
+let current = 0;
+let score = 0;
+let answered = [];
+let timerInterval = null;
+let timeLeft = 45 * 60;
+let examStarted = false;
+
+// ──────────────── TIMER ────────────────
+function startTimer() {
+  const el = document.getElementById('timer');
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    const m = Math.floor(timeLeft / 60);
+    const s = timeLeft % 60;
+    el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if (timeLeft <= 300 && timeLeft > 60) el.className = 'timer warning';
+    if (timeLeft <= 60) el.className = 'timer critical';
+    if (timeLeft <= 0) { clearInterval(timerInterval); showResults(); }
+  }, 1000);
+}
+
+// ──────────────── RENDER PREGUNTAS ────────────────
+function buildQuestions() {
+  const wrap = document.getElementById('questions-wrap');
+  wrap.innerHTML = '';
+  QUESTIONS.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'q-card' + (i === 0 ? ' visible' : '');
+    card.id = `q-${i}`;
+
+    const typeLabel = {teorica:'Selección Múltiple', caso:'Caso Práctico', orden:'Ordenamiento'}[q.type];
+    const typeClass = {teorica:'type-teorica', caso:'type-caso', orden:'type-orden'}[q.type];
+
+    let inner = `
+      <div class="q-meta">
+        <div class="q-num">Pregunta ${i+1} de ${QUESTIONS.length}</div>
+        <div class="q-type ${typeClass}">${typeLabel}</div>
+      </div>`;
+
+    if (q.scenario) {
+      inner += `<div class="q-scenario"><span class="emoji">${q.scenario.split(' ')[0]}</span>${q.scenario.substring(q.scenario.indexOf(' ')+1)}</div>`;
+    }
+    inner += `<div class="q-text">${q.text}</div>`;
+
+    if (q.type === 'orden') {
+      inner += buildOrderQuestion(q, i);
+    } else {
+      inner += `<div class="options" id="opts-${i}">`;
+      const letters = ['A','B','C','D'];
+      q.options.forEach((opt, oi) => {
+        inner += `<div class="option" id="opt-${i}-${oi}" onclick="selectOption(${i},${oi})">
+          <div class="option-letter">${letters[oi]}</div>
+          <div class="option-text">${opt}</div>
+        </div>`;
+      });
+      inner += `</div>`;
+    }
+
+    inner += `<div class="feedback" id="fb-${i}"></div>`;
+    inner += `<div class="q-nav"><button class="btn-next" id="next-${i}" disabled onclick="nextQuestion(${i})">
+      ${i < QUESTIONS.length - 1 ? 'Siguiente →' : 'Ver Resultados'}
+    </button></div>`;
+
+    card.innerHTML = inner;
+    wrap.appendChild(card);
+  });
+}
+
+function buildOrderQuestion(q, i) {
+  const shuffled = [...q.items];
+  // Simple shuffle
+  for (let j = shuffled.length - 1; j > 0; j--) {
+    const k = Math.floor(Math.random() * (j+1));
+    [shuffled[j], shuffled[k]] = [shuffled[k], shuffled[j]];
+  }
+  window[`orderState_${i}`] = shuffled.map(item => q.items.indexOf(item));
+
+  let html = `<div class="order-list" id="order-${i}">`;
+  shuffled.forEach((item, si) => {
+    html += `<div class="order-item" draggable="true" data-si="${si}" id="oi-${i}-${si}">
+      <span class="handle">⠿</span>
+      <span class="step-num">${si+1}</span>
+      <span>${item}</span>
+    </div>`;
+  });
+  html += `</div>`;
+  html += `<button class="order-check-btn" onclick="checkOrder(${i})">✅ Verificar Orden</button>`;
+  return html;
+}
+
+// ──────────────── OPCIONES MULTIPLE CHOICE ────────────────
+function selectOption(qIdx, optIdx) {
+  if (answered[qIdx] !== undefined) return;
+  answered[qIdx] = optIdx;
+
+  const q = QUESTIONS[qIdx];
+  const opts = document.querySelectorAll(`#opts-${qIdx} .option`);
+  opts.forEach((el, i) => {
+    if (i === q.answer) el.classList.add('correct');
+    else if (i === optIdx && optIdx !== q.answer) el.classList.add('wrong');
+    else el.classList.add('neutral');
+  });
+
+  if (optIdx === q.answer) score++;
+  showFeedback(qIdx, optIdx === q.answer, q.feedback);
+  document.getElementById(`next-${qIdx}`).disabled = false;
+}
+
+function showFeedback(qIdx, correct, msg) {
+  const fb = document.getElementById(`fb-${qIdx}`);
+  fb.className = `feedback show ${correct ? 'ok' : 'ko'}`;
+  fb.innerHTML = `${correct ? '✅' : '❌'} ${msg}`;
+}
+
+// ──────────────── ORDENAMIENTO ────────────────
+function checkOrder(qIdx) {
+  const q = QUESTIONS[qIdx];
+  const items = document.querySelectorAll(`#order-${qIdx} .order-item`);
+  const currentOrder = Array.from(items).map(el => window[`orderState_${qIdx}`][parseInt(el.dataset.si)]);
+  const correct = JSON.stringify(currentOrder) === JSON.stringify(q.correctOrder);
+
+  items.forEach((el, i) => {
+    el.classList.add(correct ? 'order-correct' : 'order-wrong');
+    el.draggable = false;
+  });
+
+  if (correct) score++;
+  answered[qIdx] = correct ? q.correctOrder[0] : -1;
+  showFeedback(qIdx, correct, q.feedback);
+  document.getElementById(`next-${qIdx}`).disabled = false;
+
+  // Mostrar el orden correcto si falló
+  if (!correct) {
+    const ol = document.getElementById(`order-${qIdx}`);
+    const correctList = document.createElement('div');
+    correctList.style.cssText = 'margin-top:12px;padding:12px 16px;background:rgba(46,139,87,.1);border:1px solid rgba(46,139,87,.3);border-radius:8px;font-size:14px;color:var(--green-light)';
+    correctList.innerHTML = `<strong>Orden correcto:</strong><br>${q.correctOrder.map((idx, n) => `${n+1}. ${q.items[idx]}`).join('<br>')}`;
+    ol.parentNode.insertBefore(correctList, ol.nextSibling);
+  }
+}
+
+// Drag & Drop para ordenamiento (implementación simple)
+document.addEventListener('dragstart', e => {
+  if (e.target.classList.contains('order-item')) {
+    e.dataTransfer.setData('text/plain', e.target.id);
+    e.target.classList.add('dragging');
+  }
+});
+document.addEventListener('dragend', e => {
+  if (e.target.classList.contains('order-item')) e.target.classList.remove('dragging');
+});
+document.addEventListener('dragover', e => {
+  e.preventDefault();
+  const dragging = document.querySelector('.order-item.dragging');
+  const target = e.target.closest('.order-item');
+  if (dragging && target && dragging !== target) {
+    const list = target.parentNode;
+    const items = [...list.querySelectorAll('.order-item')];
+    const fromIdx = items.indexOf(dragging);
+    const toIdx = items.indexOf(target);
+    if (fromIdx < toIdx) list.insertBefore(dragging, target.nextSibling);
+    else list.insertBefore(dragging, target);
+    // Update step numbers
+    [...list.querySelectorAll('.order-item')].forEach((el, i) => {
+      el.querySelector('.step-num').textContent = i+1;
+    });
+  }
+});
+
+// ──────────────── NAVEGACIÓN ────────────────
+function nextQuestion(qIdx) {
+  if (answered[qIdx] === undefined) return;
+  document.getElementById(`q-${qIdx}`).classList.remove('visible');
+  if (qIdx + 1 < QUESTIONS.length) {
+    current = qIdx + 1;
+    document.getElementById(`q-${current}`).classList.add('visible');
+    updateProgress();
+  } else {
+    showResults();
+  }
+}
+
+function updateProgress() {
+  const pct = ((current + 1) / QUESTIONS.length) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `Pregunta ${current+1} / ${QUESTIONS.length}`;
+}
+
+// ──────────────── RESULTADOS ────────────────
+function showResults() {
+  clearInterval(timerInterval);
+  document.getElementById('questions-wrap').innerHTML = '';
+  const screen = document.getElementById('screen-result');
+  screen.style.display = 'block';
+
+  const total = QUESTIONS.length;
+  const pct = Math.round((score / total) * 100);
+  const passed = pct >= 70;
+
+  // Ring animation
+  const arc = document.getElementById('scoreArc');
+  const circumference = 534;
+  const offset = circumference - (pct / 100) * circumference;
+  setTimeout(() => { arc.style.transition = 'stroke-dashoffset 1.5s ease'; arc.style.strokeDashoffset = offset; }, 200);
+
+  document.getElementById('scoreNum').textContent = pct;
+  document.getElementById('resultTitle').textContent = passed ? '🎉 ¡Aprobado!' : '📚 Revisa los temas';
+  document.getElementById('resultMsg').textContent = passed
+    ? `Obtuviste ${score} de ${total} respuestas correctas. Estás listo para aplicar NOM-009-STPS-2011 en campo.`
+    : `Obtuviste ${score} de ${total} respuestas correctas. Necesitas al menos 70% para aprobar. Revisa los módulos con errores y vuelve a intentarlo.`;
+
+  const teor = QUESTIONS.filter(q=>q.type==='teorica');
+  const caso = QUESTIONS.filter(q=>q.type==='caso');
+  const orden = QUESTIONS.filter(q=>q.type==='orden');
+  const teorScore = teor.filter((_,i)=>answered[i]===QUESTIONS[i].answer).length;
+
+  document.getElementById('breakdown').innerHTML = `
+    <div class="bd-card ${score>=total*.7?'ok':'ko'}">
+      <div class="bd-num">${score}/${total}</div>
+      <div class="bd-lbl">Respuestas correctas</div>
+    </div>
+    <div class="bd-card pct">
+      <div class="bd-num">${pct}%</div>
+      <div class="bd-lbl">Calificación final</div>
+    </div>
+    <div class="bd-card ${passed?'ok':'ko'}">
+      <div class="bd-num">${passed?'✅':'❌'}</div>
+      <div class="bd-lbl">${passed?'APROBADO':'NO APROBADO'}</div>
+    </div>`;
+
+  document.getElementById('certBox').innerHTML = passed
+    ? `<h3>🏆 Certificado de Aprobación</h3>
+       <p>Este resultado acredita el dominio teórico del curso<br><strong>Trabajo en Alturas — NOM-009-STPS-2011</strong></p>
+       <p style="margin-top:8px;font-size:14px">Fecha: ${new Date().toLocaleDateString('es-MX', {year:'numeric',month:'long',day:'numeric'})}</p>
+       <div class="cert-badge">✅ NOM-009-STPS-2011 · APROBADO · ${pct}%</div>`
+    : `<h3>📖 Plan de Mejora</h3>
+       <p>Revisa los módulos: <strong>Marco Normativo, SPPC y EPP, Procedimientos de Rescate</strong></p>
+       <p style="margin-top:8px;font-size:14px;color:var(--amber)">Puedes volver a presentar el examen después de revisar los materiales.</p>`;
+
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('progressLabel').textContent = 'Examen completado';
+}
+
+// ──────────────── INICIO ────────────────
+document.getElementById('btnStart').addEventListener('click', () => {
+  document.getElementById('screen-start').style.display = 'none';
+  buildQuestions();
+  startTimer();
+  updateProgress();
+});
+</script>
+</body>
+</html>
