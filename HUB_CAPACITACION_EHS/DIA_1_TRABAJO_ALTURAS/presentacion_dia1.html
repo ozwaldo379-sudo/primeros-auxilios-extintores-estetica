@@ -69,6 +69,7 @@ ul{list-style:none;display:grid;gap:14px} li{font-size:21px;line-height:1.28;col
 #nav{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);display:flex;align-items:center;gap:16px;z-index:50;background:rgba(8,15,26,.72);border:1px solid rgba(201,169,97,.26);border-radius:999px;padding:10px 18px;backdrop-filter:blur(10px);transition:opacity .25s ease} body.hide-nav #nav{opacity:0;pointer-events:none}
 .navbtn{font-family:'Barlow Condensed';font-size:20px;font-weight:800;color:var(--gold-light);background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:999px;width:42px;height:34px;cursor:pointer;transition:background 0.2s, transform 0.2s}
 .navbtn:hover{background:rgba(255,255,255,0.12);transform:scale(1.05)}
+.navbtn:focus-visible{outline:2px solid var(--gold-light);outline-offset:2px}
 #counter{font-family:'Barlow Condensed';font-size:16px;color:var(--muted);letter-spacing:1px;min-width:108px;text-align:center}
 #timer{position:fixed;right:34px;top:26px;z-index:55;font-family:'Barlow Condensed';font-size:24px;font-weight:800;color:var(--gold-light);background:rgba(8,15,26,.72);border:1px solid rgba(201,169,97,.25);border-radius:8px;padding:8px 14px;display:none} #timer.show{display:block}
 #notes{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(8,15,26,.92);border-top:1px solid rgba(201,169,97,.35);padding:18px 34px;transform:translateY(100%);transition:transform .3s ease;color:var(--white);font-size:14px;line-height:1.45} #notes.show{transform:translateY(0)} #notes strong{font-family:'Barlow Condensed';color:var(--gold-light);font-size:16px;letter-spacing:1px}
@@ -613,7 +614,7 @@ ul{list-style:none;display:grid;gap:14px} li{font-size:21px;line-height:1.28;col
   <div class="decor">30</div>
 </section>
 </div>
-<div id="nav"><button class="navbtn" id="prevBtn">‹</button><span id="counter">Slide 1 de 30</span><button class="navbtn" id="nextBtn">›</button></div>
+<div id="nav"><button class="navbtn" id="prevBtn" aria-label="Diapositiva anterior">‹</button><span id="counter">Slide 1 de 30</span><button class="navbtn" id="nextBtn" aria-label="Siguiente diapositiva">›</button></div>
 <div id="notes"><strong>Notas del instructor</strong><div id="noteText"></div></div>
 <div id="overview" class="overlay"><h2>Vista general</h2><div id="overviewGrid"></div></div>
 <div id="help" class="overlay"><div class="helpbox"><h2>Atajos</h2><ul><li><span>Anterior / siguiente</span><span class="key">← → Space</span></li><li><span>Pantalla completa</span><span class="key">F</span></li><li><span>Notas del instructor</span><span class="key">P</span></li><li><span>Temporizador</span><span class="key">T</span></li><li><span>Vista general</span><span class="key">O</span></li><li><span>Ayuda</span><span class="key">H / ?</span></li><li><span>Cerrar overlay</span><span class="key">Esc</span></li></ul></div></div>
