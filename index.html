@@ -1,43 +1,219 @@
-<!DOCTYPE html>
-<html lang="es">
+<!doctype html>
+<html lang="es-MX">
 <head>
   <meta charset="utf-8">
-  <title>Trabajo en Alturas (NOM-009-STPS-2011) - Vértice EHS</title>
-  <meta http-equiv="refresh" content="0; url=HUB_CAPACITACION_EHS/DIA_1_TRABAJO_ALTURAS/presentacion_dia1.html">
-  <style>
-    body {
-      background: #080f1a;
-      color: #fff;
-      font-family: sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .loader-box {
-      text-align: center;
-      padding: 30px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(18, 37, 67, 0.4);
-      border-radius: 12px;
-      max-width: 500px;
-    }
-    a {
-      color: #dfc07a;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071d35">
+  <title>Vértice EHS | Primeros Auxilios y Manejo de Extintores</title>
+  <meta name="description" content="Hub de capacitación Vértice EHS para primeros auxilios y manejo de extintores en una estética.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="loader-box">
-    <h2 style="margin-bottom: 12px; font-weight: normal; color: #dfc07a;">Vértice EHS Academy</h2>
-    <p>Redireccionando a la presentación de Trabajo en Alturas...</p>
-    <p style="font-size: 0.9rem; margin-top: 20px; color: #8fa3bc;">Si no se redirige automáticamente, haga <a href="HUB_CAPACITACION_EHS/DIA_1_TRABAJO_ALTURAS/presentacion_dia1.html">clic aquí para ingresar</a>.</p>
+  <header class="topbar">
+    <a class="brand" href="#inicio" aria-label="Vértice EHS, inicio">
+      <img src="assets/vertice-ehs-logo.png" alt="Vértice EHS">
+    </a>
+    <div class="session-meta">
+      <span>Capacitación aplicada</span>
+      <strong>3 horas · 2 participantes</strong>
+    </div>
+    <button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false">☰</button>
+  </header>
+
+  <div class="app-shell">
+    <aside class="course-nav" aria-label="Navegación del curso">
+      <div class="nav-progress">
+        <div><span>Progreso general</span><strong id="progressText">0%</strong></div>
+        <div class="progress-track"><span id="progressBar"></span></div>
+      </div>
+      <nav>
+        <button class="nav-link active" data-target="inicio"><span>00</span>Inicio</button>
+        <p>Primeros auxilios</p>
+        <button class="nav-link" data-target="pa-fundamentos"><span>01</span>Fundamentos</button>
+        <button class="nav-link" data-target="pa-lesiones"><span>02</span>Lesiones comunes</button>
+        <button class="nav-link" data-target="pa-practicas"><span>03</span>Prácticas</button>
+        <p>Manejo de extintores</p>
+        <button class="nav-link" data-target="ex-teoria"><span>04</span>Teoría del fuego</button>
+        <button class="nav-link" data-target="ex-riesgos"><span>05</span>Riesgos y equipos</button>
+        <button class="nav-link" data-target="ex-practicas"><span>06</span>Prácticas</button>
+        <p>Cierre</p>
+        <button class="nav-link" data-target="evaluacion"><span>07</span>Evaluación</button>
+      </nav>
+      <div class="emergency-note"><b>Emergencia real</b><span>Prioriza tu seguridad, evacúa y llama al 911.</span></div>
+    </aside>
+
+    <main>
+      <section id="inicio" class="view active hero-view">
+        <div class="hero-copy">
+          <p class="kicker">Vértice EHS · Formación para estética</p>
+          <h1>Responder bien empieza por reconocer el riesgo.</h1>
+          <p class="lead">Un recorrido práctico para actuar ante lesiones frecuentes y decidir con seguridad frente a un conato de incendio.</p>
+          <div class="hero-actions">
+            <button class="primary" data-target="pa-fundamentos">Iniciar capacitación</button>
+            <button class="secondary" data-target="evaluacion">Ir a evaluación</button>
+          </div>
+          <div class="audience-line"><span>60% teoría</span><span>40% práctica</span><span>Nivel básico operativo</span></div>
+        </div>
+        <div class="route-board" aria-label="Ruta de capacitación">
+          <div class="route-head"><span>Ruta de hoy</span><strong>180 min</strong></div>
+          <article class="route pa-route">
+            <div class="route-icon">+</div>
+            <div><small>95 min</small><h2>Primeros auxilios</h2><p>Evaluar, proteger y responder ante cortes, quemaduras, caídas y atragantamiento.</p></div>
+          </article>
+          <article class="route fire-route">
+            <div class="route-icon">F</div>
+            <div><small>75 min</small><h2>Manejo de extintores</h2><p>Reconocer el fuego, elegir el equipo y conservar siempre una salida segura.</p></div>
+          </article>
+          <div class="route-close"><b>10 min</b><span>Evaluación y compromiso final</span></div>
+        </div>
+      </section>
+
+      <section id="pa-fundamentos" class="view">
+        <header class="section-title"><p>Módulo 01 · 35 min</p><h2>Fundamentos y evaluación inicial</h2><span>La prioridad no es “hacer mucho”; es evitar que la situación empeore.</span></header>
+        <div class="principle-grid">
+          <article><b>P</b><h3>Proteger</h3><p>Observa electricidad, químicos, vidrio, calor y tránsito de personas antes de acercarte.</p></article>
+          <article><b>A</b><h3>Avisar</h3><p>Pide apoyo, asigna a alguien la llamada al 911 y da ubicación, estado y riesgos.</p></article>
+          <article><b>S</b><h3>Socorrer</h3><p>Actúa dentro de tu capacitación: controla sangrado, tranquiliza y vigila cambios.</p></article>
+        </div>
+        <div class="content-split">
+          <article class="lesson-panel">
+            <h3>Evaluación primaria</h3>
+            <ol class="decision-list">
+              <li><span>1</span><div><b>¿La escena es segura?</b><p>No te conviertas en otra víctima.</p></div></li>
+              <li><span>2</span><div><b>¿Responde?</b><p>Habla fuerte, identifica cambios en conciencia.</p></div></li>
+              <li><span>3</span><div><b>¿Respira normalmente?</b><p>Si no respira o solo jadea, activa 911 y RCP si estás capacitado.</p></div></li>
+              <li><span>4</span><div><b>¿Hay sangrado grave?</b><p>Presión directa con material limpio y apoyo inmediato.</p></div></li>
+            </ol>
+          </article>
+          <article class="salon-map">
+            <div class="map-label">Estética · mapa de riesgos</div>
+            <button class="risk-dot r1" data-tip="Tijeras y navajas: cortes y sangrado.">1</button>
+            <button class="risk-dot r2" data-tip="Plancha, secadora y cera: quemaduras térmicas.">2</button>
+            <button class="risk-dot r3" data-tip="Tintes y productos: irritación o salpicadura química.">3</button>
+            <button class="risk-dot r4" data-tip="Cables y piso húmedo: caída y contacto eléctrico.">4</button>
+            <div class="salon-scene"><span class="mirror"></span><span class="chair"></span><span class="counter"></span><span class="dryer"></span></div>
+            <p id="riskTip">Selecciona un punto para revisar el riesgo.</p>
+          </article>
+        </div>
+        <div class="red-flag"><strong>Llama al 911</strong><span>Dificultad respiratoria, pérdida de conciencia, sangrado que no cede, dolor intenso, convulsiones o quemadura extensa/profunda.</span></div>
+      </section>
+
+      <section id="pa-lesiones" class="view">
+        <header class="section-title"><p>Módulo 02 · 30 min</p><h2>Lesiones comunes en una estética</h2><span>Protocolos cortos, seguros y fáciles de recordar.</span></header>
+        <div class="scenario-tabs" role="tablist">
+          <button class="scenario-tab active" data-scenario="corte">Corte</button>
+          <button class="scenario-tab" data-scenario="quemadura">Quemadura</button>
+          <button class="scenario-tab" data-scenario="quimico">Salpicadura</button>
+          <button class="scenario-tab" data-scenario="caida">Caída</button>
+        </div>
+        <article class="scenario-detail" id="scenarioDetail"></article>
+        <div class="two-columns">
+          <article class="kit-panel">
+            <h3>Botiquín mínimo recomendado</h3>
+            <div class="kit-list">
+              <label><input type="checkbox" data-progress="kit1"> Guantes desechables</label>
+              <label><input type="checkbox" data-progress="kit2"> Gasas estériles y vendas</label>
+              <label><input type="checkbox" data-progress="kit3"> Cinta médica y apósitos</label>
+              <label><input type="checkbox" data-progress="kit4"> Solución salina / lavaojos</label>
+              <label><input type="checkbox" data-progress="kit5"> Tijeras de punta roma</label>
+              <label><input type="checkbox" data-progress="kit6"> Barrera para RCP y directorio de emergencias</label>
+            </div>
+          </article>
+          <article class="dont-panel"><h3>Evita estas acciones</h3><ul><li>Hielo directo, mantequilla, pasta dental o pomadas caseras en quemaduras.</li><li>Retirar objetos incrustados o limpiar una herida profunda.</li><li>Dar alimentos o bebidas a una persona inconsciente.</li><li>Mover a alguien tras una caída fuerte si hay dolor de cuello o espalda.</li></ul></article>
+        </div>
+      </section>
+
+      <section id="pa-practicas" class="view">
+        <header class="section-title"><p>Módulo 03 · 30 min</p><h2>Prácticas de primeros auxilios</h2><span>Una participante ejecuta; la otra observa con el checklist. Después intercambian roles.</span></header>
+        <div class="sim-grid">
+          <article class="sim-card">
+            <div class="sim-heading"><span>Práctica 1</span><h3>Atragantamiento consciente</h3></div>
+            <div class="heimlich-visual"><div class="figure rescuer"></div><div class="figure victim"></div><div class="thrust" id="thrust"></div></div>
+            <div class="ordered-actions" data-sequence="choking">
+              <button data-step="1">Confirmar que no puede hablar, toser o respirar</button>
+              <button data-step="2">Pedir ayuda y activar el 911</button>
+              <button data-step="3">Aplicar golpes interescapulares según protocolo</button>
+              <button data-step="4">Aplicar compresiones abdominales hacia adentro y arriba</button>
+            </div>
+            <p class="feedback" id="chokingFeedback">Selecciona el primer paso.</p>
+          </article>
+          <article class="sim-card">
+            <div class="sim-heading"><span>Práctica 2</span><h3>Control de sangrado y vendaje</h3></div>
+            <div class="bandage-visual"><div class="arm"><i></i><span></span><span></span><span></span></div></div>
+            <div class="ordered-actions" data-sequence="bandage">
+              <button data-step="1">Higiene de manos y guantes</button>
+              <button data-step="2">Presión directa con gasa limpia</button>
+              <button data-step="3">Fijar la gasa sin apretar demasiado</button>
+              <button data-step="4">Revisar color, temperatura y sensibilidad</button>
+            </div>
+            <p class="feedback" id="bandageFeedback">Completa la secuencia correcta.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="ex-teoria" class="view">
+        <header class="section-title"><p>Módulo 04 · 25 min</p><h2>Teoría del fuego y clases</h2><span>Para apagar un conato debes retirar al menos uno de los elementos que mantienen el fuego.</span></header>
+        <div class="fire-theory">
+          <div class="fire-triangle"><span class="ft heat">Calor</span><span class="ft fuel">Combustible</span><span class="ft oxygen">Oxígeno</span><b>FUEGO</b></div>
+          <article class="theory-copy"><h3>¿Conato o incendio?</h3><p><b>Conato:</b> fuego inicial, pequeño y contenido, con salida libre y extintor disponible.</p><p><b>Incendio:</b> crece, produce humo intenso, alcanza techo/paredes o bloquea la salida. En ese punto se evacúa; no se combate.</p><div class="stop-rule">Si dudas, evacúa.</div></article>
+        </div>
+        <div class="class-grid">
+          <article><b>A</b><h3>Sólidos</h3><p>Papel, cartón, textiles, cabello.</p><span>PQS ABC</span></article>
+          <article><b>B</b><h3>Líquidos</h3><p>Alcohol, acetona, aerosoles.</p><span>PQS ABC o CO₂</span></article>
+          <article><b>C</b><h3>Eléctrico</h3><p>Secadora, plancha, contactos.</p><span>CO₂ o PQS ABC</span></article>
+          <article><b>K</b><h3>Aceites</h3><p>Aceites o grasas de cocina.</p><span>Clase K</span></article>
+        </div>
+      </section>
+
+      <section id="ex-riesgos" class="view">
+        <header class="section-title"><p>Módulo 05 · 25 min</p><h2>Determinación del riesgo y equipos</h2><span>La mejor respuesta contra incendio ocurre antes de que exista una llama.</span></header>
+        <div class="risk-matrix">
+          <article class="matrix-item high"><span>Alto</span><h3>Multicontacto saturado</h3><p>Calor, chispas y equipos de alta demanda conectados juntos.</p></article>
+          <article class="matrix-item high"><span>Alto</span><h3>Aerosol cerca de calor</h3><p>Envases presurizados junto a planchas, secadoras o flama.</p></article>
+          <article class="matrix-item medium"><span>Medio</span><h3>Alcohol y acetona abiertos</h3><p>Vapores inflamables, derrames y almacenamiento sin control.</p></article>
+          <article class="matrix-item medium"><span>Medio</span><h3>Toallas y cabello acumulado</h3><p>Carga combustible cerca de equipos calientes.</p></article>
+        </div>
+        <div class="equipment-panel">
+          <div class="extinguisher-shape"><span>ABC</span></div>
+          <div><p class="kicker">Equipo recomendado para el local</p><h3>Extintor PQS tipo ABC, accesible y señalizado</h3><ul><li>Ubicado cerca de una salida, sin obstáculos.</li><li>Manómetro en zona operable y sello intacto.</li><li>Revisión visual mensual y mantenimiento por proveedor autorizado.</li><li>CO₂ puede complementar para equipo eléctrico, según evaluación.</li></ul></div>
+        </div>
+      </section>
+
+      <section id="ex-practicas" class="view">
+        <header class="section-title"><p>Módulo 06 · 25 min</p><h2>Prácticas de manejo de extintores</h2><span>Primero decide si debes combatir. Después aplica PASS con la salida siempre detrás de ti.</span></header>
+        <div class="fire-practice">
+          <aside class="scenario-picker"><h3>Selecciona el fuego</h3><button class="fire-choice active" data-fire="paper">Toallas y papel</button><button class="fire-choice" data-fire="solvent">Alcohol o acetona</button><button class="fire-choice" data-fire="electric">Secadora energizada</button><button class="fire-choice" data-fire="large">Fuego creciendo y humo</button></aside>
+          <div class="fire-simulator">
+            <div class="wind-control"><div><small>Dirección de aire</small><strong id="windLabel">Hacia la derecha</strong></div><button id="rotateWind" aria-label="Cambiar dirección del aire"><span id="windArrow">→</span></button></div>
+            <div class="fire-scene"><div class="exit">SALIDA</div><div class="operator"></div><div class="spray" id="spray"></div><div class="flame" id="flame"></div></div>
+            <div class="decision-output"><div><small>Decisión</small><strong id="fireDecision">Puede combatirse si es pequeño</strong></div><div><small>Equipo</small><strong id="fireEquipment">PQS ABC</strong></div></div>
+            <p id="fireAdvice">Mantén la salida detrás de ti y apunta a la base.</p>
+            <div class="pass-actions" data-sequence="pass"><button data-step="1">P · Quitar seguro</button><button data-step="2">A · Apuntar a la base</button><button data-step="3">S · Presionar manija</button><button data-step="4">S · Barrer lateralmente</button></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="evaluacion" class="view">
+        <header class="section-title"><p>Módulo 07 · 10 min</p><h2>Evaluación y cierre</h2><span>Ambas participantes deben responder y demostrar las prácticas.</span></header>
+        <div class="evaluation-grid">
+          <form id="quizForm" class="quiz">
+            <label>Participante 1<input type="text" name="p1" placeholder="Nombre completo"></label>
+            <label>Participante 2<input type="text" name="p2" placeholder="Nombre completo"></label>
+            <fieldset><legend>1. Una clienta no puede hablar ni toser. ¿Qué corresponde?</legend><label><input type="radio" name="q1" value="0"> Dar agua y esperar</label><label><input type="radio" name="q1" value="1"> Pedir ayuda, activar 911 y aplicar protocolo de atragantamiento</label></fieldset>
+            <fieldset><legend>2. ¿Qué se usa en una secadora energizada?</legend><label><input type="radio" name="q2" value="1"> CO₂ o PQS ABC; nunca agua</label><label><input type="radio" name="q2" value="0"> Agua directa a la conexión</label></fieldset>
+            <fieldset><legend>3. ¿Cuándo no debe combatirse el fuego?</legend><label><input type="radio" name="q3" value="0"> Cuando el extintor está cerca</label><label><input type="radio" name="q3" value="1"> Cuando crece, hay humo intenso o la salida no está libre</label></fieldset>
+            <fieldset><legend>4. ¿Qué se hace primero ante una cortadura?</legend><label><input type="radio" name="q4" value="1"> Protegerse y aplicar presión directa con material limpio</label><label><input type="radio" name="q4" value="0"> Aplicar alcohol dentro de la herida</label></fieldset>
+            <button class="primary" type="submit">Calcular resultado</button>
+          </form>
+          <aside class="result-card"><img src="assets/vertice-ehs-logo.png" alt="Vértice EHS"><small>Resultado del equipo</small><strong id="scoreText">Pendiente</strong><p id="scoreMessage">Completen la evaluación y las demostraciones prácticas.</p><div class="final-checks"><label><input type="checkbox" data-progress="final1"> Heimlich practicado</label><label><input type="checkbox" data-progress="final2"> Vendaje practicado</label><label><input type="checkbox" data-progress="final3"> Extintor identificado</label><label><input type="checkbox" data-progress="final4"> PASS demostrado</label></div></aside>
+        </div>
+        <footer class="sources"><b>Referencias base</b><span>NOM-002-STPS-2010 · NOM-030-STPS-2009 · American Red Cross · NFPA 10 · OSHA</span><p>Capacitación básica interna. No sustituye certificación de RCP, atención médica ni entrenamiento de brigadas.</p></footer>
+      </section>
+    </main>
   </div>
+  <script src="app.js"></script>
 </body>
 </html>

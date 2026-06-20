@@ -1,34 +1,47 @@
-# Día 1 - Trabajo en Alturas (NOM-009-STPS-2011)
+# Primeros Auxilios y Manejo de Extintores para Estética
 
-Este repositorio contiene todos los materiales oficiales del **Día 1: Trabajo en Alturas** correspondientes al **Sistema Integral de Capacitación EHS de Vértice EHS**.
+Hub de capacitación de **Vértice EHS** diseñado para dos personas que trabajan en una estética o salón de corte de cabello.
 
-## 📂 Contenido del Repositorio
+## Estructura del curso
 
-El repositorio está estructurado para conservar las rutas relativas requeridas por las presentaciones y dinámicas, permitiendo su ejecución de forma local y offline:
+- Duración total: 3 horas.
+- Primeros auxilios: 95 minutos.
+- Manejo de extintores: 75 minutos.
+- Evaluación y cierre: 10 minutos.
+- Distribución: 60% teoría y 40% práctica.
 
-### 1. Material Didáctico y Presentación Principal
-*   **[Presentación Interactiva del Día 1](file:///z:/1.-%20VERTICE%20EHS/d%C3%ADa%201%20trabajo%20en%20alturas/HUB_CAPACITACION_EHS/DIA_1_TRABAJO_ALTURAS/presentacion_dia1.html)**: Diapositivas dinámicas e interactivas con todo el marco legal de la NOM-009, obligaciones, jerarquía de controles y rescate.
-*   **[Flashcards de EPP](file:///z:/1.-%20VERTICE%20EHS/d%C3%ADa%201%20trabajo%20en%20alturas/material_didactico/flashcards_epp.html)**: Material didáctico interactivo para memorizar las partes y clases del arnés y conectores.
+## Contenido
 
-### 2. Guías de Trabajo
-*   **[Guía de Trabajo - Capacitación Integral EHS](file:///z:/1.-%20VERTICE%20EHS/d%C3%ADa%201%20trabajo%20en%20alturas/guia_de_trabajo.html)**: Manual y bitácora del participante en formato HTML autocompletable.
-*   **[Guía de Referencia Rápida - Trabajo en Alturas](file:///z:/1.-%20VERTICE%20EHS/d%C3%ADa%201%20trabajo%20en%20alturas/guia_rapida_alturas.html)**: Ficha técnica de campo con el resumen normativo, jerarquía de controles, checklist del arnés y protocolo de rescate.
-*   **[Cronograma del Curso (Alturas)](file:///z:/1.-%20VERTICE%20EHS/d%C3%ADa%201%20trabajo%20en%20alturas/cronograma_trabajo_alturas.md)**: El plan de sesión minuto a minuto de la jornada de 4 horas.
+- Fundamentos, fases de emergencia y evaluación inicial.
+- Cortes, sangrado, quemaduras, salpicaduras químicas y caídas.
+- Práctica guiada de atragantamiento y vendaje.
+- Teoría y clases de fuego aplicables a una estética.
+- Riesgos eléctricos, aerosoles, alcohol, acetona y carga combustible.
+- Selección de extintor, viento/ventilación, evacuación y método PASS.
+- Evaluación final para dos participantes.
 
-### 3. Dinámicas y Simuladores Prácticos
-*   **[Dinámica 1: Identificación de Riesgos](file:///z:/1.-%20VERTICE%20EHS/d%C3%ADa%201%20trabajo%20en%20alturas/HUB_CAPACITACION_EHS/DIA_1_TRABAJO_ALTURAS/dinamicas/dinamica_riesgos.html)**: Localizador de peligros en escenario de andamio.
-*   **[Dinámica 2: Selección y Clasificación de EPP](file:///z:/1.-%20VERTICE%20EHS/d%C3%ADa%201%20trabajo%20en%20alturas/HUB_CAPACITACION_EHS/DIA_1_TRABAJO_ALTURAS/dinamicas/dinamica_epp.html)**: Clasificador interactivo de EPP.
-*   **[Dinámica 3: Inspección de Arnés](file:///z:/1.-%20VERTICE%20EHS/d%C3%ADa%201%20trabajo%20en%20alturas/HUB_CAPACITACION_EHS/DIA_1_TRABAJO_ALTURAS/dinamicas/simulador_arnes.html)**: Lista de verificación interactiva para inspección pre-uso.
-*   **[Simulador Isométrico de Análisis de Riesgo](file:///z:/1.-%20VERTICE%20EHS/d%C3%ADa%201%20trabajo%20en%20alturas/simuladores/analisis_riesgo/simulador_integrado.html)**: Escenario 3D para arrastrar peligros y controles y exportar reporte PDF de matriz de riesgos.
-*   **[Juego: Competencia de Inspección de EPP](file:///z:/1.-%20VERTICE%20EHS/d%C3%ADa%201%20trabajo%20en%20alturas/simuladores/inspeccion/competencia_inspeccion.html)**: Competencia de detección de defectos en equipos.
-*   **[Guión de Roleplay: Simulación de Rescate](file:///z:/1.-%20VERTICE%20EHS/d%C3%ADa%201%20trabajo%20en%20alturas/actividades/guion_rescate.md)**: Guión y protocolo verbal de rescate para síndrome de arnés.
+## Uso local
 
-### 4. Evaluaciones
-*   **[Quizzes Formativos de Módulos](file:///z:/1.-%20VERTICE%20EHS/d%C3%ADa%201%20trabajo%20en%20alturas/examenes/evaluaciones_formativas/quiz_alturas.html)**: Cuestionarios interactivos breves para los módulos A1, A3 y A5.
-*   **[Examen Final - Trabajo en Alturas](file:///z:/1.-%20VERTICE%20EHS/d%C3%ADa%201%20trabajo%20en%20alturas/examenes/examen_final_alturas.html)**: Examen final integrado de 20 preguntas con retroalimentación automática y generación de constancia digital.
+Abrir `index.html` en Chrome, Edge o Firefox. No requiere instalación ni servidor.
 
-## 🚀 Instrucciones de Ejecución
-Para abrir y reproducir cualquier material, simplemente haga doble clic sobre el archivo `.html` deseado desde su navegador web (Chrome, Edge o Firefox). Al ser archivos estáticos offline, **no requieren internet ni servidor local**.
+## Despliegue
 
----
-© 2026 Vértice EHS Academy · Soluciones Avanzadas de Seguridad y Salud en el Trabajo.
+El proyecto es estático y compatible con Vercel. La raíz pública es la carpeta del repositorio.
+
+## Materiales del instructor y participante
+
+- Presentación editable en Google Slides: https://docs.google.com/presentation/d/15UQ1bSF6lIZg4rjRlQIACC_N-e7OwMb7L9akCcQuDww
+- PowerPoint editable: `materiales/Presentacion_Vertice_EHS_Primeros_Auxilios_Extintores.pptx`
+- Manual Word: `materiales/Manual_Participante_Vertice_EHS_Primeros_Auxilios_Extintores.docx`
+
+## Referencias base
+
+- NOM-002-STPS-2010.
+- NOM-030-STPS-2009.
+- American Red Cross.
+- NFPA 10.
+- OSHA, extintores portátiles.
+
+> Capacitación básica interna. No sustituye certificación de RCP, atención médica profesional o entrenamiento formal de brigadas contra incendio.
+
+© 2026 Vértice EHS.
